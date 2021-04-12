@@ -1,0 +1,35 @@
+from selenium import webdriver
+from time import sleep
+import csv
+#Ngô Hoàng Ân - B1709524
+import pandas as pd
+from pandas import DataFrame
+while True:
+	brower = webdriver.Chrome(executable_path="chromedriver.exe")
+	name = []
+	price = []
+	brower.get("https://www.binance.com/vi/markets")
+	sleep(2)
+	lic = brower.find_elements_by_xpath('//*[@id="__APP"]/div[1]/main/div/div[2]/div/div/div[1]/div/div/div/div[2]/div')[0].click()
+	sleep(2)
+	lists = brower.find_elements_by_class_name("css-1uly3p5")
+	sleep(2)
+	for item in lists:
+		sp = item.find_element_by_class_name("css-14yoi5o")
+		gia =  item.find_element_by_class_name("css-ydcgk2")
+		#print("*",sp.text," : ",gia.text)
+		name.append(sp.text)
+		price.append(gia.text.replace("$", ""))
+	brower.quit()
+	'''
+	df = DataFrame([price], columns=name)
+	df.to_csv("dulieu.csv", index=False)
+
+	'''
+	df = pd.read_csv("dulieu.csv")
+	col = df.columns # lay name cua du lieu ( ten thuoc tinh)
+	df2 = pd.DataFrame([price], columns=col)
+	df_new = pd.concat([df, df2], ignore_index=True)
+	print(df_new)
+	df_new.to_csv("dulieu.csv", index=False)
+	sleep(600)
